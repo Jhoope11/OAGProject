@@ -1,0 +1,4 @@
+For new schema, person file = authors file
+need to related by author.id from publication and person files
+Affiliation id is just used to show the affiliation between a person and the group sponsoring them. 
+author name can be found in both person and publication file. Publication file seems like the ultimate file where everything is stored.
