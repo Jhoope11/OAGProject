@@ -4,13 +4,18 @@ from multiprocessing import Pool
 
 # Specify the folders and file paths
 papers_folder = 'F:/OAGProject/OAGFiles/OAGPublications/'
-output_folder = 'F:/OAGProject/Output/'
+output_folder = 'F:/OAGProject/NewOutput/'
 references_folder = '/users/PGS0283/jhoope11/jack/Graphs/UpdatedFiles/'
 
 def read_papers(file_path):
     print(f"Reading papers from file: {file_path}\n")
     papers = {}
+    # with open(file_path, "rb") as f:
+    #     num_lines = sum(1 for _ in f)
+    # f.close()
+    # expected_chunks = num_lines/4000
     with open(file_path, 'r', encoding='utf-8') as f:
+        #print(f"number of lines: {num_lines}\nexpected num of chunks: {expected_chunks}")
         for line in f:
             paper_data = json.loads(line.strip())  # Parse each line as JSON
             paper_id = paper_data.get("id")
@@ -22,7 +27,7 @@ def read_papers(file_path):
             n_citation = paper_data.get("n_citation", "")
             authors = [{"Name": author.get("name", ""), "AuthorId": author.get("id", ""), "AuthorOrg": author.get("org", "")} for author in paper_data.get("authors", [])]
             num_authors = len(authors)
-            keywords = paper_data.get("keywords", "")
+            keywords = paper_data.get("keywords", [])
             abstracts = paper_data.get("abstract", "")
             #fos = [field.get("name", "") for field in paper_data.get("fos", [])]
             papers[paper_id] = {
@@ -58,7 +63,7 @@ def create_json_file(output_folder, papers, master_file_name):
     with open(output_file, 'w') as f:
         f.write("[")
         for paper_id, paper_info in papers.items():
-            if count == 2000:
+            if count == 4000:
                 f.write("\n]")
                 f.close()
                 # Map the current chunk to its corresponding file
@@ -79,7 +84,8 @@ def create_json_file(output_folder, papers, master_file_name):
                 'Journal': paper_info['Venue'],
                 'Year': paper_info['Year'],
                 'NumAuthors': paper_info['NumAuthors'],
-                'Authors': paper_info['Authors']
+                'Authors': paper_info['Authors'],
+                'Keywords': paper_info['Keywords']
             }))
             count += 1
         f.write("\n]")
@@ -91,6 +97,8 @@ def create_json_file(output_folder, papers, master_file_name):
     create_reference_file(output_folder, paper_id_mapping)
 
     print(f"JSON files created in folder: {output_folder}\n")
+
+
 def process_papers(i, papers_folder):
     print(f"Processing papers file {i}\n")
     papers_file = os.path.join(papers_folder, f"v3.1_oag_publication_{i}.json")
@@ -104,14 +112,17 @@ def process_papers(i, papers_folder):
     output_file = os.path.join(output_folder, f"papers_chunk_{i}.json")
     create_json_file(output_file, papers, f"v3.1_oag_publication_{i}.json")
     print(f"Chunk {i} processing complete\n")
-def process_files(papers_folder, output_folder):
-    print("Processing files...\n")
+
+def process_files(papers_folder, output_folder, num_files):
     
-    # with Pool(processes=28) as pool:
-    #     pool.starmap(process_papers, [(i, papers_folder) for i in range(5)])
-    # pool.close()
-    # pool.join()
-    process_papers(1, papers_folder)
+    file_range = list(range(1, num_files+1))
+    args = [(i, papers_folder) for i in file_range]
+    with Pool(processes=6) as pool:  # Adjust `processes` based on your CPU cores
+        pool.starmap(process_papers, args)
+    print("All files processed.")
+
+    
     print("All files processed.")
 # Process all files
-process_files(papers_folder, output_folder)
+if __name__ == '__main__':
+    process_files(papers_folder, output_folder, 14)
