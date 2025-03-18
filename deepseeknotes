@@ -1,0 +1,2 @@
+Take 10 random rows with blacked out country names and run it through deepseek to see the percentage it gets correct. Save those results and graph them.
+Then submit the same rows with the country names. then graph those results. 
