@@ -273,7 +273,7 @@ def get_iso_code(country_name):
     # Return empty string if not found
     return ""
 
-def transform_chunked_files(input_base_dir, output_base_dir):
+def transform_chunked_files(input_base_dir, output_base_dir, FieldOfStudy):
     """
     Transforms chunked JSON files to match the new format with ISO codes.
     
@@ -311,10 +311,10 @@ def transform_chunked_files(input_base_dir, output_base_dir):
                     transformed = {
                         "CitationID": paper.get("PaperId", ""),
                         "YearOfPub": paper.get("Year", ""),
-                        "CategoryOfPub": "",  # Will need to be filled based on your data
+                        "CategoryOfPub": FieldOfStudy, 
                         "ListOfFieldsOfStudy": paper.get("Keywords", []),
                         "CountOfAuthors": len(paper.get("Authors", [])),
-                        "CountOfCountrys": 0,  # Will be calculated below
+                        "CountOfCountrys": 0,  
                         "ListOfAuthors": [author.get("Name", "") for author in paper.get("Authors", [])],
                         "Subfields": [],  # Will need to be filled based on your data
                         "AuthorID": [author.get("AuthorId", "") for author in paper.get("Authors", [])],
