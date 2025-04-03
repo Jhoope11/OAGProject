@@ -1,293 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
-        <title>Fig2 Generator</title>
-    </head>
-    <body>
-        <form method ="post">
-            <div class="dropdown">
-                <div id="Countrys" class="dropdown-content">
-                    <input type="text" placeholder="Select a Country" id="SelectedCountry" onkeyup="filterFunction()">
-                    <a href="#AD">Andorra</a>
-                    <a href="#AE">United Arab Emirates</a>
-                    <a href="#AF">Afghanistan</a>
-                    <a href="#AG">Antigua and Barbuda</a>
-                    <a href="#AI">Anguilla</a>
-                    <a href="#AL">Albania</a>
-                    <a href="#AM">Armenia</a>
-                    <a href="#AO">Angola</a>
-                    <a href="#AQ">Antarctica</a>
-                    <a href="#AR">Argentina</a>
-                    <a href="#AS">American Samoa</a>
-                    <a href="#AT">Austria</a>
-                    <a href="#AU">Australia</a>
-                    <a href="#AW">Aruba</a>
-                    <a href="#AX">Åland Islands</a>
-                    <a href="#AZ">Azerbaijan</a>
-                    <a href="#BA">Bosnia and Herzegovina</a>
-                    <a href="#BB">Barbados</a>
-                    <a href="#BD">Bangladesh</a>
-                    <a href="#BE">Belgium</a>
-                    <a href="#BF">Burkina Faso</a>
-                    <a href="#BG">Bulgaria</a>
-                    <a href="#BH">Bahrain</a>
-                    <a href="#BI">Burundi</a>
-                    <a href="#BJ">Benin</a>
-                    <a href="#BL">Saint Barthélemy</a>
-                    <a href="#BM">Bermuda</a>
-                    <a href="#BN">Brunei Darussalam</a>
-                    <a href="#BO">Bolivia, Plurinational State of</a>
-                    <a href="#BQ">Bonaire, Sint Eustatius and Saba</a>
-                    <a href="#BR">Brazil</a>
-                    <a href="#BS">Bahamas</a>
-                    <a href="#BT">Bhutan</a>
-                    <a href="#BV">Bouvet Island</a>
-                    <a href="#BW">Botswana</a>
-                    <a href="#BY">Belarus</a>
-                    <a href="#BZ">Belize</a>
-                    <a href="#CA">Canada</a>
-                    <a href="#CC">Cocos (Keeling) Islands</a>
-                    <a href="#CD">Congo, Democratic Republic of the</a>
-                    <a href="#CF">Central African Republic</a>
-                    <a href="#CG">Congo</a>
-                    <a href="#CH">Switzerland</a>
-                    <a href="#CI">Côte d'Ivoire</a>
-                    <a href="#CK">Cook Islands</a>
-                    <a href="#CL">Chile</a>
-                    <a href="#CM">Cameroon</a>
-                    <a href="#CN">China</a>
-                    <a href="#CO">Colombia</a>
-                    <a href="#CR">Costa Rica</a>
-                    <a href="#CU">Cuba</a>
-                    <a href="#CV">Cabo Verde</a>
-                    <a href="#CW">Curaçao</a>
-                    <a href="#CX">Christmas Island</a>
-                    <a href="#CY">Cyprus</a>
-                    <a href="#CZ">Czechia</a>
-                    <a href="#DE">Germany</a>
-                    <a href="#DJ">Djibouti</a>
-                    <a href="#DK">Denmark</a>
-                    <a href="#DM">Dominica</a>
-                    <a href="#DO">Dominican Republic</a>
-                    <a href="#DZ">Algeria</a>
-                    <a href="#EC">Ecuador</a>
-                    <a href="#EE">Estonia</a>
-                    <a href="#EG">Egypt</a>
-                    <a href="#EH">Western Sahara</a>
-                    <a href="#ER">Eritrea</a>
-                    <a href="#ES">Spain</a>
-                    <a href="#ET">Ethiopia</a>
-                    <a href="#FI">Finland</a>
-                    <a href="#FJ">Fiji</a>
-                    <a href="#FK">Falkland Islands (Malvinas)</a>
-                    <a href="#FM">Micronesia, Federated States of</a>
-                    <a href="#FO">Faroe Islands</a>
-                    <a href="#FR">France</a>
-                    <a href="#GA">Gabon</a>
-                    <a href="#GB">United Kingdom of Great Britain and Northern Ireland</a>
-                    <a href="#GD">Grenada</a>
-                    <a href="#GE">Georgia</a>
-                    <a href="#GF">French Guiana</a>
-                    <a href="#GG">Guernsey</a>
-                    <a href="#GH">Ghana</a>
-                    <a href="#GI">Gibraltar</a>
-                    <a href="#GL">Greenland</a>
-                    <a href="#GM">Gambia</a>
-                    <a href="#GN">Guinea</a>
-                    <a href="#GP">Guadeloupe</a>
-                    <a href="#GQ">Equatorial Guinea</a>
-                    <a href="#GR">Greece</a>
-                    <a href="#GS">South Georgia and the South Sandwich Islands</a>
-                    <a href="#GT">Guatemala</a>
-                    <a href="#GU">Guam</a>
-                    <a href="#GW">Guinea-Bissau</a>
-                    <a href="#GY">Guyana</a>
-                    <a href="#HK">Hong Kong</a>
-                    <a href="#HM">Heard Island and McDonald Islands</a>
-                    <a href="#HN">Honduras</a>
-                    <a href="#HR">Croatia</a>
-                    <a href="#HT">Haiti</a>
-                    <a href="#HU">Hungary</a>
-                    <a href="#ID">Indonesia</a>
-                    <a href="#IE">Ireland</a>
-                    <a href="#IL">Israel</a>
-                    <a href="#IM">Isle of Man</a>
-                    <a href="#IN">India</a>
-                    <a href="#IO">British Indian Ocean Territory</a>
-                    <a href="#IQ">Iraq</a>
-                    <a href="#IR">Iran, Islamic Republic of</a>
-                    <a href="#IS">Iceland</a>
-                    <a href="#IT">Italy</a>
-                    <a href="#JE">Jersey</a>
-                    <a href="#JM">Jamaica</a>
-                    <a href="#JO">Jordan</a>
-                    <a href="#JP">Japan</a>
-                    <a href="#KE">Kenya</a>
-                    <a href="#KG">Kyrgyzstan</a>
-                    <a href="#KH">Cambodia</a>
-                    <a href="#KI">Kiribati</a>
-                    <a href="#KM">Comoros</a>
-                    <a href="#KN">Saint Kitts and Nevis</a>
-                    <a href="#KP">Korea, Democratic People's Republic of</a>
-                    <a href="#KR">Korea, Republic of</a>
-                    <a href="#KW">Kuwait</a>
-                    <a href="#KY">Cayman Islands</a>
-                    <a href="#KZ">Kazakhstan</a>
-                    <a href="#LA">Lao People's Democratic Republic</a>
-                    <a href="#LB">Lebanon</a>
-                    <a href="#LC">Saint Lucia</a>
-                    <a href="#LI">Liechtenstein</a>
-                    <a href="#LK">Sri Lanka</a>
-                    <a href="#LR">Liberia</a>
-                    <a href="#LS">Lesotho</a>
-                    <a href="#LT">Lithuania</a>
-                    <a href="#LU">Luxembourg</a>
-                    <a href="#LV">Latvia</a>
-                    <a href="#LY">Libya</a>
-                    <a href="#MA">Morocco</a>
-                    <a href="#MC">Monaco</a>
-                    <a href="#MD">Moldova, Republic of</a>
-                    <a href="#ME">Montenegro</a>
-                    <a href="#MF">Saint Martin (French part)</a>
-                    <a href="#MG">Madagascar</a>
-                    <a href="#MH">Marshall Islands</a>
-                    <a href="#MK">North Macedonia</a>
-                    <a href="#ML">Mali</a>
-                    <a href="#MM">Myanmar</a>
-                    <a href="#MN">Mongolia</a>
-                    <a href="#MO">Macao</a>
-                    <a href="#MP">Northern Mariana Islands</a>
-                    <a href="#MQ">Martinique</a>
-                    <a href="#MR">Mauritania</a>
-                    <a href="#MS">Montserrat</a>
-                    <a href="#MT">Malta</a>
-                    <a href="#MU">Mauritius</a>
-                    <a href="#MV">Maldives</a>
-                    <a href="#MW">Malawi</a>
-                    <a href="#MX">Mexico</a>
-                    <a href="#MY">Malaysia</a>
-                    <a href="#MZ">Mozambique</a>
-                    <a href="#NA">Namibia</a>
-                    <a href="#NC">New Caledonia</a>
-                    <a href="#NE">Niger</a>
-                    <a href="#NF">Norfolk Island</a>
-                    <a href="#NG">Nigeria</a>
-                    <a href="#NI">Nicaragua</a>
-                    <a href="#NL">Netherlands, Kingdom of the</a>
-                    <a href="#NO">Norway</a>
-                    <a href="#NP">Nepal</a>
-                    <a href="#NR">Nauru</a>
-                    <a href="#NU">Niue</a>
-                    <a href="#NZ">New Zealand</a>
-                    <a href="#OM">Oman</a>
-                    <a href="#PA">Panama</a>
-                    <a href="#PE">Peru</a>
-                    <a href="#PF">French Polynesia</a>
-                    <a href="#PG">Papua New Guinea</a>
-                    <a href="#PH">Philippines</a>
-                    <a href="#PK">Pakistan</a>
-                    <a href="#PL">Poland</a>
-                    <a href="#PM">Saint Pierre and Miquelon</a>
-                    <a href="#PN">Pitcairn</a>
-                    <a href="#PR">Puerto Rico</a>
-                    <a href="#PS">Palestine, State of</a>
-                    <a href="#PT">Portugal</a>
-                    <a href="#PW">Palau</a>
-                    <a href="#PY">Paraguay</a>
-                    <a href="#QA">Qatar</a>
-                    <a href="#RE">Réunion</a>
-                    <a href="#RO">Romania</a>
-                    <a href="#RS">Serbia</a>
-                    <a href="#RU">Russian Federation</a>
-                    <a href="#RW">Rwanda</a>
-                    <a href="#SA">Saudi Arabia</a>
-                    <a href="#SB">Solomon Islands</a>
-                    <a href="#SC">Seychelles</a>
-                    <a href="#SD">Sudan</a>
-                    <a href="#SE">Sweden</a>
-                    <a href="#SG">Singapore</a>
-                    <a href="#SH">Saint Helena, Ascension and Tristan da Cunha</a>
-                    <a href="#SI">Slovenia</a>
-                    <a href="#SJ">Svalbard and Jan Mayen</a>
-                    <a href="#SK">Slovakia</a>
-                    <a href="#SL">Sierra Leone</a>
-                    <a href="#SM">San Marino</a>
-                    <a href="#SN">Senegal</a>
-                    <a href="#SO">Somalia</a>
-                    <a href="#SR">Suriname</a>
-                    <a href="#SS">South Sudan</a>
-                    <a href="#ST">Sao Tome and Principe</a>
-                    <a href="#SV">El Salvador</a>
-                    <a href="#SX">Sint Maarten (Dutch part)</a>
-                    <a href="#SY">Syrian Arab Republic</a>
-                    <a href="#SZ">Eswatini</a>
-                    <a href="#TC">Turks and Caicos Islands</a>
-                    <a href="#TD">Chad</a>
-                    <a href="#TF">French Southern Territories</a>
-                    <a href="#TG">Togo</a>
-                    <a href="#TH">Thailand</a>
-                    <a href="#TJ">Tajikistan</a>
-                    <a href="#TK">Tokelau</a>
-                    <a href="#TL">Timor-Leste</a>
-                    <a href="#TM">Turkmenistan</a>
-                    <a href="#TN">Tunisia</a>
-                    <a href="#TO">Tonga</a>
-                    <a href="#TR">Türkiye</a>
-                    <a href="#TT">Trinidad and Tobago</a>
-                    <a href="#TV">Tuvalu</a>
-                    <a href="#TW">Taiwan, Province of China</a>
-                    <a href="#TZ">Tanzania, United Republic of</a>
-                    <a href="#UA">Ukraine</a>
-                    <a href="#UG">Uganda</a>
-                    <a href="#UM">United States Minor Outlying Islands</a>
-                    <a href="#US">United States of America</a>
-                    <a href="#UY">Uruguay</a>
-                    <a href="#UZ">Uzbekistan</a>
-                    <a href="#VA">Holy See</a>
-                    <a href="#VC">Saint Vincent and the Grenadines</a>
-                    <a href="#VE">Venezuela, Bolivarian Republic of</a>
-                    <a href="#VG">Virgin Islands (British)</a>
-                    <a href="#VI">Virgin Islands (U.S.)</a>
-                    <a href="#VN">Viet Nam</a>
-                    <a href="#VU">Vanuatu</a>
-                    <a href="#WF">Wallis and Futuna</a>
-                    <a href="#WS">Samoa</a>
-                    <a href="#YE">Yemen</a>
-                    <a href="#YT">Mayotte</a>
-                    <a href="#ZA">South Africa</a>
-                    <a href="#ZM">Zambia</a>
-                    <a href="#ZW">Zimbabwe</a>
-                </div>
-            </div>
-            <div class="dropdown"></div>
-                <div id="FieldsOfStudy" class="dropdown-content">
-                    <input type="text" placeholder="Select a Field of Study" id="SelectedField" onkeyup="filterFunction()">
-                    <a href="#ms">materials science</a>
-                    <a href="#md">medicine</a>
-                    <a href="#ch">chemistry</a>
-                    <a href="#cs">computer science</a>
-                    <a href="#bi">biology</a>
-                    <a href="#ma">mathematics</a>
-                    <a href="#en">engineering</a>
-                    <a href="#ph">physics</a>
-                    <a href="#es">environmental science</a>
-                    <a href="#ge">geology</a>
-                    <a href="#ps">psychology</a>
-                    <a href="#bu">business</a>
-                    <a href="#gg">geography</a>
-                    <a href="#ec">economics</a>
-                    <a href="#so">sociology</a>
-                    <a href="#po">political science</a>
-                    <a href="#hi">history</a>
-                    <a href="#ar">art</a>
-                    <a href="#pp">philosophy</a>
-                </div>
-            </div>
-            <label for="NumOfCollab"> NumOfCollab </label> <input type="text" id="NumOfCollab"><br>
-            <label for="NumOfAuth"> NumOfAuth </label> <input type="text" id="NumOfAuth"><br>
-        </form>
-    </body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Research Collaboration Analyzer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: inline-block;
+            width: 200px;
+            font-weight: bold;
+        }
+        input, select, textarea {
+            padding: 8px;
+            width: 300px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 300px;
+            max-height: 300px;
+            overflow-y: auto;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+        .show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <h1>Research Collaboration Analyzer</h1>
+    <form method="post">
+        <div class="form-group">
+            <label for="TitleOfChart">Title Of Chart:</label>
+            <input type="text" id="TitleOfChart" name="TitleOfChart" value="Research Collaboration Metrics" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="YearOfStart">Year Of Start:</label>
+            <input type="number" id="YearOfStart" name="YearOfStart" min="1900" max="2099">
+        </div>
+        
+        <div class="form-group">
+            <label for="YearOfEnd">Year Of End:</label>
+            <input type="number" id="YearOfEnd" name="YearOfEnd" min="1900" max="2099">
+        </div>
+        
+        <div class="form-group">
+            <label for="SelectedCountry">Selected Country:</label>
+            <select id="SelectedCountry" name="SelectedCountry">
+                <option value="">All Countries</option>
+                {% for country in countries %}
+                <option value="{{ country }}">{{ country }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="FieldOfStudy">Field Of Study:</label>
+            <select id="FieldOfStudy" name="FieldOfStudy">
+                <option value="">All Fields</option>
+                {% for field in fields_of_study %}
+                <option value="{{ field }}">{{ field|title }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <button type="submit">Analyze Collaborations</button>
+    </form>
+
+    <script>
+        // Simple dropdown functionality can be added here if needed
+    </script>
+</body>
 </html>
