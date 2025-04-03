@@ -329,7 +329,7 @@ def build_country_prompt(org: str, citation_context: Dict) -> str:
     Determine the research institution's country with this context:
     
     PAPER DETAILS:
-    - Title: {citation_context.get('Title', '')}
+    - Title: {citation_context.get('PaperTitle', '')}
     - Year: {citation_context.get('Year', '')}
     - Keywords: {', '.join(citation_context.get('Keywords', []))}
     
@@ -497,7 +497,7 @@ def process_all_files():
                                 )
 
                 except Exception as e:
-                    print(f"⚠️ Failed to process {file_path}: {str(e)}")
+                    print(f"Failed to process {file_path}: {str(e)}")
                     failed_files.append(file_path)
                     # Log failed file for retry
                     with open('failed_files.log', 'a', encoding='utf-8') as err_log:
@@ -505,7 +505,7 @@ def process_all_files():
 
         # Chunk completion report
         print(
-            f"✅ Completed {chunk_dir} "
+            f"Completed {chunk_dir} "
             f"({processed_count} total citations in {time.time()-start_time:.1f}s)"
         )
 
