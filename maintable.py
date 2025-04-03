@@ -255,6 +255,8 @@ country_to_iso = {
     "Zimbabwe": "ZW"
 }
 
+
+
 def get_iso_code(country_name):
     """Helper function to get ISO code with some basic cleaning"""
     if not country_name:
@@ -273,7 +275,7 @@ def get_iso_code(country_name):
     # Return empty string if not found
     return ""
 
-def transform_chunked_files(input_base_dir, output_base_dir, FieldOfStudy):
+def transform_chunked_files(input_base_dir, output_base_dir, FieldsOfStudy[]):
     """
     Transforms chunked JSON files to match the new format with ISO codes.
     
@@ -325,7 +327,6 @@ def transform_chunked_files(input_base_dir, output_base_dir, FieldOfStudy):
                     # Process countries and ISO codes
                     countries = set()
                     for author in paper.get("Authors", []):
-                        # Extract country from AuthorOrg (assuming it's the last part after comma)
                         org = author.get("AuthorOrg", "")
                         country = ""
                         if org:
@@ -349,7 +350,29 @@ def transform_chunked_files(input_base_dir, output_base_dir, FieldOfStudy):
 
 # Example usage
 if __name__ == "__main__":
+    FieldsOfStudy = [
+    "materials science",
+    "medicine",
+    "chemistry",
+    "computer science",
+    "biology",
+    "mathematics",
+    "engineering",
+    "physics",
+    "environmental science",
+    "geology",
+    "psychology",
+    "business",
+    "geography",
+    "economics",
+    "sociology",
+    "political science",
+    "history",
+    "art",
+    "philosophy"
+]
     transform_chunked_files(
-        input_base_dir="output",  # Your original chunked files directory
-        output_base_dir="transformed_output"  # Where to save transformed files
+        input_base_dir="output",  
+        output_base_dir="Output2",
+        FieldsOfStudy
     )
