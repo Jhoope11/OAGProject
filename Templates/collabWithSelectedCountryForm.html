@@ -1,9 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Research Collaboration Analyzer</title>
+{% extends "base.html" %}
+
+{% block title %}Research Collaboration Analysis{% endblock %}
+
+{% block content %}
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -57,10 +56,9 @@
             display: block;
         }
     </style>
-</head>
-<body>
+<div>
     <h1>Research Collaboration Analyzer</h1>
-    <form method="post">
+    <form method="post" action="{{url_for('researchCollabAnalyzerForm')}}">
         <div class="form-group">
             <label for="TitleOfChart">Title Of Chart:</label>
             <input type="text" id="TitleOfChart" name="TitleOfChart" value="Research Collaboration Metrics" required>
@@ -100,7 +98,6 @@
     </form>
 
     <script>
-        // Simple dropdown functionality can be added here if needed
     </script>
-</body>
-</html>
+</div>
+{% endblock %}

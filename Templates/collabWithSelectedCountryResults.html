@@ -1,9 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analysis Results</title>
+{% extends "base.html" %}
+
+{% block title %}Analysis Results{% endblock %}
+
+{% block content %}
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -48,8 +47,7 @@
             background-color: #f2f2f2;
         }
     </style>
-</head>
-<body>
+<div>
     <h1>Analysis Results</h1>
     
     <div class="data-summary">
@@ -98,5 +96,5 @@
     </div>
     
     <a href="/" class="back-button">New Analysis</a>
-</body>
-</html>
+</div>
+{% endblock %}
