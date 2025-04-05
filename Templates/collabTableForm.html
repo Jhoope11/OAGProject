@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Country Collaboration Analysis{% endblock %}
+
+{% block content %}
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: inline-block;
+            width: 200px;
+            font-weight: bold;
+        }
+        input, select {
+            padding: 8px;
+            width: 300px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+    <div>
+        <h1>Country Collaboration Analysis</h1>
+        <form method="post" action="{{ url_for('collaboration_table') }}">
+            <div class="form-group">
+                <label for="Title">Title:</label>
+                <input type="text" id="Title" name="Title" value="Collaboration With Selected Country" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="SelectedCountry">Selected Country:</label>
+                <select id="SelectedCountry" name="SelectedCountry" required>
+                    <option value="">Select a country</option>
+                    {% for country in countries %}
+                    <option value="{{ country }}">{{ country }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="FieldOfStudy">Field Of Study:</label>
+                <select id="FieldOfStudy" name="FieldOfStudy">
+                    {% for field in fields_of_study %}
+                    <option value="{{ field }}">{{ field|title }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="YearOfStart">Year Of Start:</label>
+                <input type="number" id="YearOfStart" name="YearOfStart" min="1900" max="2099" value="2000" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="YearOfEnd">Year Of End:</label>
+                <input type="number" id="YearOfEnd" name="YearOfEnd" min="1900" max="2099" value="2020" required>
+            </div>
+            
+            <button type="submit">Generate Table</button>
+        </form>
+    </div>
+{% endblock %}

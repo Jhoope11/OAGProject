@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}Country Collaboration Analysis Results{% endblock %}
+
+{% block content %}
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0 auto;
+            padding: 20px;
+            max-width: 1200px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .summary {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+            position: sticky;
+            top: 0;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .back-button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin-top: 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+<div>
+    <h1>{{ form_data['Title'] }}</h1>
+    
+    <div class="summary">
+        <p><strong>Selected Country:</strong> {{ form_data['SelectedCountry'] }}</p>
+        <p><strong>Field of Study:</strong> {{ form_data['FieldOfStudy']|title if form_data['FieldOfStudy'] != 'all' else 'All Fields' }}</p>
+        <p><strong>Time Period:</strong> {{ form_data['YearOfStart'] }} - {{ form_data['YearOfEnd'] }}</p>
+    </div>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Country</th>
+                {% for period in time_periods %}
+                <th>{{ period }}</th>
+                {% endfor %}
+                <th>Total</th>
+                <th>Percent of total (%)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in table_data %}
+            <tr>
+                <td>{{ row['Country'] }}</td>
+                {% for period in time_periods %}
+                <td>{{ row[period] }}</td>
+                {% endfor %}
+                <td>{{ row['Total'] }}</td>
+                <td>{{ "%.2f"|format(row['Percent']) }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <a href="/" class="back-button">New Analysis</a>
+</div>
+{% endblock%}
