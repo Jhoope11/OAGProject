@@ -2,13 +2,12 @@ from flask import Flask, render_template, request
 import matplotlib.pyplot as plt
 import io
 import base64
-import tkinter as tk 
 import os
 import csv
 from collections import defaultdict
 
 app = Flask(__name__)
-csvFile = "formatted_citations.csv"
+
 COUNTRIES_ISO = {
     "Andorra": "AD",
     "United Arab Emirates": "AE",
@@ -282,7 +281,7 @@ FIELDS_OF_STUDY = [
     "philosophy"
 ]
 
-def load_citations_data():
+def load_citations_data(csvFile):
     """Load and index the citations data from CSV"""
     data = []
     if os.path.exists(csvFile):
@@ -301,14 +300,6 @@ def filter_citations(data, query_params):
     """Filters citations based on user query parameters"""
     filtered = []
     for citation in data:
-        # Checks year range
-        if 'YearOfStart' in query_params and 'YearOfEnd' in query_params:
-            try:
-                year = int(citation['Year'])
-                if not (int(query_params['YearOfStart']) <= year <= int(query_params['YearOfEnd'])):
-                    continue
-            except ValueError:
-                continue
         # Checks country
         if 'SelectedCountry' in query_params and query_params['SelectedCountry']:
             target_country = query_params['SelectedCountry']
@@ -405,11 +396,21 @@ def create_graph(metrics, title):
     
     # Convert to base64 for HTML embedding
     return base64.b64encode(buffer.getvalue()).decode('utf-8')
+@app.route('/')
+def base():
+    return render_template('base.html')
 
+@app.route('/collab-table-form')
+def collab_table_form():
+    return render_template('collabTableForm.html', fields_of_study = FIELDS_OF_STUDY, countries = COUNTRIES_ISO)
 
-@app.route('/', methods=['GET', 'POST'])
-def index():
-    citations_data = load_citations_data()
+@app.route('/collab-with-selected-country')
+def collab_with_selected_country():
+    return render_template('collabWithSelectedCountryForm.html', fields_of_study = FIELDS_OF_STUDY, countries = COUNTRIES_ISO)
+
+@app.route('/researchCollabAnalyzerForm', methods=['GET', 'POST'])
+def researchCollabAnalyzerForm():
+    citations_data = []
     
     if request.method == 'POST':
         form_data = {
@@ -423,6 +424,14 @@ def index():
             'NumberOfAuthors': 0,
             'NumOfPapers': 0
         }
+        #Load data based on the specified year count
+        startYear = int(request.form.get('YearOfStart', ''))
+        endYear = int(request.form.get('YearOfEnd', ''))
+        
+        while startYear != endYear+1:
+            citationPath = os.path.join('years', f"{str(startYear)}.csv")
+            citations_data.extend(load_citations_data(citationPath))
+            startYear += 1
         
         # Filter data based on query
         filtered_data = filter_citations(citations_data, form_data)
@@ -441,15 +450,160 @@ def index():
         # Generate visualization
         graph = create_graph(metrics, form_data['TitleOfChart'])
         
-        return render_template('result.html', 
+        return render_template('collabWithSelectedCountryResults.html', 
                             graph=graph,
                             form_data=form_data,
                             metrics=metrics)
     else:
         # For GET request, show form with default values
-        return render_template('index.html', 
+        return render_template('collabWithSelectedCountryForm.html', 
                             countries=sorted(COUNTRIES_ISO.keys()),
                             fields_of_study=FIELDS_OF_STUDY)
+        
+def analyze_country_collaborations(data, selected_country, field_of_study, year_start, year_end):
+    """Analyze collaborations between selected country and others across time periods"""
+    # Define time periods
+    time_periods = [
+        (year_start, year_start + 5),
+        (year_start + 6, year_start + 10),
+        (year_start + 11, year_start + 15),
+        (year_start + 16, year_end)
+    ]
+    
+    # Filter data for selected country and field
+    filtered_data = []
+    for citation in data:
+        # Check if citation is valid
+        if not isinstance(citation, dict):
+            continue
+            
+        # Check year
+        try:
+            year = int(citation.get('Year', 0))
+            if not (year_start <= year <= year_end):
+                continue
+        except (ValueError, TypeError):
+            continue
+            
+        # Check field of study if specified
+        if field_of_study and field_of_study.lower() != 'all':
+            fields = citation.get('Fields', '').split('|')
+            if field_of_study.lower() not in [f.lower() for f in fields]:
+                continue
+                
+        # Check if selected country is in authors
+        authors = citation.get('Authors', [])
+        has_selected_country = any(
+            isinstance(author, dict) and 
+            author.get('AuthCountryISO') == COUNTRIES_ISO.get(selected_country, '')
+            for author in authors
+        )
+        
+        if has_selected_country:
+            filtered_data.append(citation)
+    
+    # Count collaborations by country and time period
+    results = defaultdict(lambda: defaultdict(int))
+    total_collaborations = 0
+    
+    for citation in filtered_data:
+        try:
+            year = int(citation.get('Year', 0))
+            authors = citation.get('Authors', [])
+            
+            # Get all collaborating countries (excluding selected country)
+            collaborating_countries = set()
+            for author in authors:
+                if isinstance(author, dict):
+                    country_iso = author.get('AuthCountryISO')
+                    if country_iso and country_iso != COUNTRIES_ISO.get(selected_country, ''):
+                        # Find country name from ISO code
+                        country_name = next(
+                            (name for name, iso in COUNTRIES_ISO.items() if iso == country_iso),
+                            country_iso  # fallback to ISO code if name not found
+                        )
+                        collaborating_countries.add(country_name)
+            
+            # Assign to time period
+            period = None
+            for i, (start, end) in enumerate(time_periods):
+                if start <= year <= end:
+                    period = i
+                    break
+            
+            if period is not None:
+                for country in collaborating_countries:
+                    results[country][period] += 1
+                    results[country]['total'] += 1
+                    total_collaborations += 1
+        except (ValueError, TypeError):
+            continue
+    
+    # Convert to sorted list of dictionaries for the table
+    sorted_countries = sorted(results.items(), key=lambda x: x[1]['total'], reverse=True)
+    
+    table_data = []
+    for country, counts in sorted_countries:
+        row = {'Country': country}
+        for i in range(len(time_periods)):
+            row[f'{time_periods[i][0]}-{time_periods[i][1]}'] = counts.get(i, 0)
+        row['Total'] = counts.get('total', 0)
+        row['Percent'] = (counts.get('total', 0) / total_collaborations * 100) if total_collaborations > 0 else 0
+        table_data.append(row)
+    
+    return table_data
 
+
+@app.route('/collabTableResults', methods=['GET', 'POST'])
+def collaboration_table():
+    if request.method == 'POST':
+        # Get form data
+        form_data = {
+            'Title': request.form.get('Title', 'Collaboration With Selected Country'),
+            'SelectedCountry': request.form.get('SelectedCountry', ''),
+            'FieldOfStudy': request.form.get('FieldOfStudy', 'all'),
+            'YearOfStart': int(request.form.get('YearOfStart', 2000)),
+            'YearOfEnd': int(request.form.get('YearOfEnd', 2020))
+        }
+        
+        # Load data
+        citations_data = []
+        start_year = form_data['YearOfStart']
+        end_year = form_data['YearOfEnd']
+        
+        current_year = start_year
+        while current_year <= end_year:
+            citation_path = os.path.join('years', f"{current_year}.csv")
+            if os.path.exists(citation_path):
+                citations_data.extend(load_citations_data(citation_path))
+            current_year += 1
+        
+        # Analyze data
+        table_data = analyze_country_collaborations(
+            citations_data,
+            form_data['SelectedCountry'],
+            form_data['FieldOfStudy'],
+            form_data['YearOfStart'],
+            form_data['YearOfEnd']
+        )
+        
+        # Get time period labels
+        time_periods = [
+            f"{form_data['YearOfStart']}-{form_data['YearOfStart']+5}",
+            f"{form_data['YearOfStart']+6}-{form_data['YearOfStart']+10}",
+            f"{form_data['YearOfStart']+11}-{form_data['YearOfStart']+15}",
+            f"{form_data['YearOfStart']+16}-{form_data['YearOfEnd']}"
+        ]
+        
+        return render_template('collabTableResults.html',
+                            form_data=form_data,
+                            table_data=table_data,
+                            time_periods=time_periods)
+    else:
+        return render_template('collabTableForm.html',
+                            countries=sorted(COUNTRIES_ISO.keys()),
+                            fields_of_study=['all'] + FIELDS_OF_STUDY)
+        
+        
 if __name__ == '__main__':
     app.run(debug=True)

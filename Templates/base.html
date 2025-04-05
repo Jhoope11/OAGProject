@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="navbar">
+        <a href="{{ url_for('base') }}">Home</a>
+        <a href="{{ url_for('collab_table_form') }}">Collaboration with Selected Country</a>
+        <a href="{{ url_for('collab_with_selected_country') }}">Country Collaboration Analysis</a>
+    </div>
+    
+    <div class="content">
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>
