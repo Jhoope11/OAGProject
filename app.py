@@ -8,7 +8,7 @@ import csv
 from collections import defaultdict
 
 app = Flask(__name__)
-csvFile = "formatted_citations.csv"
+
 COUNTRIES_ISO = {
     "Andorra": "AD",
     "United Arab Emirates": "AE",
@@ -282,7 +282,7 @@ FIELDS_OF_STUDY = [
     "philosophy"
 ]
 
-def load_citations_data():
+def load_citations_data(csvFile):
     """Load and index the citations data from CSV"""
     data = []
     if os.path.exists(csvFile):
@@ -301,14 +301,6 @@ def filter_citations(data, query_params):
     """Filters citations based on user query parameters"""
     filtered = []
     for citation in data:
-        # Checks year range
-        if 'YearOfStart' in query_params and 'YearOfEnd' in query_params:
-            try:
-                year = int(citation['Year'])
-                if not (int(query_params['YearOfStart']) <= year <= int(query_params['YearOfEnd'])):
-                    continue
-            except ValueError:
-                continue
         # Checks country
         if 'SelectedCountry' in query_params and query_params['SelectedCountry']:
             target_country = query_params['SelectedCountry']
@@ -409,7 +401,7 @@ def create_graph(metrics, title):
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    citations_data = load_citations_data()
+    citations_data = []
     
     if request.method == 'POST':
         form_data = {
@@ -423,6 +415,14 @@ def index():
             'NumberOfAuthors': 0,
             'NumOfPapers': 0
         }
+        #Load data based on the specified year count
+        startYear = int(request.form.get('YearOfStart', ''))
+        endYear = int(request.form.get('YearOfEnd', ''))
+        
+        while startYear != endYear+1:
+            citationPath = os.path.join('years', f"{str(startYear)}.csv")
+            citations_data.extend(load_citations_data(citationPath))
+            startYear += 1
         
         # Filter data based on query
         filtered_data = filter_citations(citations_data, form_data)
