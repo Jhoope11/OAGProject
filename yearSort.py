@@ -17,7 +17,7 @@ def yearSort():
         "CitationID", "Year", "Title", "Fields",
         "Authors", "SourceChunk", "ProcessingTime"
     ]
-    with open('formatted_citations2.csv', 'r') as csvFile:
+    with open('formatted_citations.csv', 'r', encoding='utf-8') as csvFile:
         reader = csv.DictReader(csvFile)
         if not os.path.exists(outputFolder):
             os.makedirs(outputFolder, exist_ok=True)
@@ -33,7 +33,7 @@ def yearSort():
             
             
 def testMain():
-    init_output_file('formatted_citations2.csv')
+    init_output_file('formatted_citations.csv')
 
 
 if __name__ == "__main__":

@@ -324,14 +324,9 @@ def query_deepseek(prompt: str, citation_id: str, max_retries=3) -> Optional[str
     return None
 
 def build_country_prompt(org: str, citation_context: Dict) -> str:
-    """Generate detailed prompt with full citation context"""
+    """Generate a fast prompt with full citation context"""
     return f"""
     Determine the research institution's country with this context:
-    
-    PAPER DETAILS:
-    - Title: {citation_context.get('PaperTitle', '')}
-    - Year: {citation_context.get('Year', '')}
-    - Keywords: {', '.join(citation_context.get('Keywords', []))}
     
     INSTITUTION: "{org}"
     
@@ -430,7 +425,7 @@ def process_citation(citation: Dict, chunk_file: str) -> Optional[Dict]:
         return {
             "CitationID": citation_id,
             "Year": citation.get("Year", ""),
-            "Title": citation.get("Title", ""),
+            "Title": citation.get("PaperTitle", ""),
             "Fields": "|".join(fields),
             "Authors": json.dumps(author_info, ensure_ascii=False),
             "SourceChunk": chunk_file,
@@ -458,6 +453,8 @@ def process_all_files():
     processed_count = 0
     failed_files = []
     start_time = time.time()
+    skip_first_rows = 635
+    first_file_processed = False
 
     # Process each chunk
     for chunk_dir in sorted(os.listdir(INPUT_DIR)):
@@ -479,6 +476,11 @@ def process_all_files():
                     # Load citations
                     with open(file_path, 'r', encoding='utf-8') as f:
                         citations = json.load(f)
+
+                     # Skip rows in first file
+                    if not first_file_processed:
+                        citations = citations[skip_first_rows:]
+                        first_file_processed = True
 
                     # Process each citation
                     for citation in citations:
