@@ -396,18 +396,53 @@ def create_graph(metrics, title):
     
     # Convert to base64 for HTML embedding
     return base64.b64encode(buffer.getvalue()).decode('utf-8')
+
+def retrieveCountries():
+    countries = set()
+    citations_data = []
+    startYear = 1999  # Adjust as needed
+    endYear = 2007    # Adjust as needed
+    
+    while startYear <= endYear:
+        citationPath = os.path.join('years', f"{str(startYear)}.csv")
+        if os.path.exists(citationPath):
+            citations_data.extend(load_citations_data(citationPath))
+        startYear += 1
+    
+    for citation in citations_data:
+        authors = citation.get('Authors', [])
+        for author in authors:
+            if isinstance(author, dict):
+                country_iso = author.get('AuthCountryISO')
+                if country_iso:
+                    # Find country name from ISO code
+                    country_name = next(
+                        (name for name, iso in COUNTRIES_ISO.items() if iso == country_iso),
+                        None
+                    )
+                    if country_name:
+                        countries.add(country_name)
+    
+    return sorted(countries)
+
 @app.route('/')
 def base():
     return render_template('base.html')
 
 @app.route('/collab-table-form')
 def collab_table_form():
-    return render_template('collabTableForm.html', fields_of_study = FIELDS_OF_STUDY, countries = COUNTRIES_ISO)
+    countries_list = retrieveCountries()
+    return render_template('collabTableForm.html', 
+                         fields_of_study=FIELDS_OF_STUDY, 
+                         countries=countries_list)
 
 @app.route('/collab-with-selected-country')
 def collab_with_selected_country():
-    return render_template('collabWithSelectedCountryForm.html', fields_of_study = FIELDS_OF_STUDY, countries = COUNTRIES_ISO)
-
+    countries_list = retrieveCountries()
+    return render_template('collabWithSelectedCountryForm.html', 
+                         fields_of_study=FIELDS_OF_STUDY, 
+                         countries=countries_list)
+    
 @app.route('/researchCollabAnalyzerForm', methods=['GET', 'POST'])
 def researchCollabAnalyzerForm():
     citations_data = []
@@ -469,6 +504,7 @@ def analyze_country_collaborations(data, selected_country, field_of_study, year_
         (year_start + 11, year_start + 15),
         (year_start + 16, year_end)
     ]
+    
     
     # Filter data for selected country and field
     filtered_data = []
