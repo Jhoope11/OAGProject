@@ -453,7 +453,7 @@ def process_all_files():
     processed_count = 0
     failed_files = []
     start_time = time.time()
-    skip_first_rows = 635
+    skip_first_rows = 1017
     first_file_processed = False
 
     # Process each chunk
